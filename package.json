@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "jest --coverage",
-    "lint": "eslint src/**/*.js",
+    "lint": "eslint --fix src/**/*.js",
     "webpack": "webpack",
     "build": "npm run lint && npm test && npm run webpack"
   },
