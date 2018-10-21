@@ -10,7 +10,7 @@
     "dist/songpro.js"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "eslint src/**/*.js",
     "webpack": "webpack",
     "build": "npm run lint && npm test && npm run webpack"
