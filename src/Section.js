@@ -1,6 +1,6 @@
 export class Section {
-  constructor(name) {
-    this.name = name;
-    this.lines = [];
-  }
+    constructor(name) {
+        this.name = name;
+        this.lines = [];
+    }
 }

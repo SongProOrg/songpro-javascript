@@ -1,21 +1,27 @@
 {
-  "name": "songpro-js",
-  "version": "1.0.0",
+  "name": "songpro",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "webpack": "webpack"
-  },
   "keywords": [],
-  "author": "",
+  "author": "Brian Kelly",
   "license": "ISC",
+  "main": "dist/songpro.js",
+  "files": [
+    "dist/songpro.js"
+  ],
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src/**/*.js",
+    "webpack": "webpack",
+    "build": "npm run lint && npm test && npm run webpack"
+  },
   "devDependencies": {
     "@webpack-cli/init": "^0.1.2",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-preset-env": "^1.7.0",
+    "eslint": "^5.7.0",
     "lodash": "^4.17.11",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2"
