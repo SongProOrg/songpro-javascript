@@ -4,7 +4,7 @@
   "description": "",
   "keywords": [],
   "author": "Brian Kelly",
-  "license": "ISC",
+  "license": "MIT",
   "main": "dist/songpro.js",
   "files": [
     "dist/songpro.js"
