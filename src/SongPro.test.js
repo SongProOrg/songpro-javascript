@@ -22,6 +22,16 @@ test('attribute parsing', () => {
     expect(song.attrs['tuning']).toEqual('Eb Standard');
 });
 
+test('custom attribute parsing', () => {
+    let song = SongPro.parse(`
+!difficulty=Easy
+!spotify_url=https://open.spotify.com/track/5zADxJhJEzuOstzcUtXlXv?si=SN6U1oveQ7KNfhtD2NHf9A
+`);
+
+    expect(song.custom['difficulty']).toEqual('Easy');
+    expect(song.custom['spotify_url']).toEqual('https://open.spotify.com/track/5zADxJhJEzuOstzcUtXlXv?si=SN6U1oveQ7KNfhtD2NHf9A');
+});
+
 test('sections', () => {
     let song = SongPro.parse('# Verse 1');
 

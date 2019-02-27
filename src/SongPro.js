@@ -13,8 +13,11 @@ export class SongPro {
 
         for (let i = 0; i < lines.length; i++) {
             let text = lines[i];
+
             if (text.startsWith('@')) {
                 this.processAttribute(song, text);
+            } else if (text.startsWith('!')) {
+                this.processCustomAttribute(song, text);
             } else if (text.startsWith('#')) {
                 currentSection = this.processSection(song, text);
             } else {
@@ -33,6 +36,16 @@ export class SongPro {
         }
 
         song.attrs[matches[1]] = matches[2];
+    }
+
+    static processCustomAttribute(song, line) {
+        const matches = /!(\w*)=([^%]*)/.exec(line);
+
+        if (matches == null) {
+            return;
+        }
+
+        song.custom[matches[1]] = matches[2];
     }
 
     static processSection(song, line) {
