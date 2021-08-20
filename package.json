@@ -16,14 +16,14 @@
     "build": "npm run lint && npm test && npm run webpack"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-react": "^7.10.4",
-    "babel-loader": "^8.1.0",
-    "eslint": "^6.8.0",
-    "jest": "^26.1.0",
-    "lodash": "^4.17.19",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+    "@babel/core": "7.15.0",
+    "@babel/preset-env": "7.15.0",
+    "@babel/preset-react": "7.14.5",
+    "babel-loader": "8.2.2",
+    "eslint": "7.32.0",
+    "jest": "27.0.6",
+    "lodash": "4.17.21",
+    "webpack": "5.51.1",
+    "webpack-cli": "4.8.0"
   }
 }
