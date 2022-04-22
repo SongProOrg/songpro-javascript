@@ -21,9 +21,7 @@ export class SongPro {
 
     const lines = text.split("\n");
 
-    for (let i = 0; i < lines.length; i++) {
-      const text = lines[i];
-
+    for (const text of lines) {
       if (text.startsWith("@")) {
         this.processAttribute(song, text);
       } else if (text.startsWith("!")) {
@@ -92,8 +90,8 @@ export class SongPro {
 
       const measures = [];
 
-      for (let i = 0; i < captures.length; i++) {
-        let chords = this.scan(captures[i], CHORDS_REGEX);
+      for (const capture of captures) {
+        let chords = this.scan(capture, CHORDS_REGEX);
         chords = flatten(chords);
 
         const measure = new Measure();
@@ -109,15 +107,13 @@ export class SongPro {
         return;
       }
 
-      const comment = matches[1]; // strip!
-      line.comment = comment;
+      line.comment = matches[1].trim();
     } else {
       let captures = this.scan(text, CHORDS_AND_LYRICS_REGEX);
       captures = flatten(captures);
       const groups = chunk(captures, 2);
 
-      for (let i = 0; i < groups.length; i++) {
-        const group = groups[i];
+      for (const group of groups) {
         let chord = group[0];
         let lyric = group[1];
 
