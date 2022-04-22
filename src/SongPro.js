@@ -3,6 +3,16 @@ import { Section } from "./Section";
 import { Line } from "./Line";
 import { chunk, flatten, trim } from "lodash";
 import { Part } from "./Part";
+import { Measure } from "./Measure";
+
+const SECTION_REGEX = /#\s*([^$]*)/;
+const ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
+const CUSTOM_ATTRIBUTE_REGEX = /!(\w*)=([^%]*)/;
+const CHORDS_AND_LYRICS_REGEX = /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
+
+const MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
+const CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
+const COMMENT_REGEX = />\s*([^$]*)/;
 
 export class SongPro {
   static parse(text) {
@@ -11,9 +21,7 @@ export class SongPro {
 
     const lines = text.split("\n");
 
-    for (let i = 0; i < lines.length; i++) {
-      const text = lines[i];
-
+    for (const text of lines) {
       if (text.startsWith("@")) {
         this.processAttribute(song, text);
       } else if (text.startsWith("!")) {
@@ -29,7 +37,7 @@ export class SongPro {
   }
 
   static processAttribute(song, line) {
-    const matches = /@(\w*)=([^%]*)/.exec(line);
+    const matches = ATTRIBUTE_REGEX.exec(line);
 
     if (matches == null) {
       return;
@@ -39,7 +47,7 @@ export class SongPro {
   }
 
   static processCustomAttribute(song, line) {
-    const matches = /!(\w*)=([^%]*)/.exec(line);
+    const matches = CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
     if (matches == null) {
       return;
@@ -49,7 +57,7 @@ export class SongPro {
   }
 
   static processSection(song, line) {
-    const matches = /#\s*([^$]*)/.exec(line);
+    const matches = SECTION_REGEX.exec(line);
 
     if (matches == null) {
       return;
@@ -74,33 +82,60 @@ export class SongPro {
 
     const line = new Line();
 
-    let captures = this.scan(text, /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi);
-    captures = flatten(captures);
-    const groups = chunk(captures, 2);
+    if (text.startsWith("|-")) {
+      line.tablature = text;
+    } else if (text.startsWith("| ")) {
+      let captures = this.scan(text, MEASURES_REGEX);
+      captures = flatten(captures);
 
-    for (let i = 0; i < groups.length; i++) {
-      const group = groups[i];
-      let chord = group[0];
-      let lyric = group[1];
+      const measures = [];
 
-      const part = new Part();
+      for (const capture of captures) {
+        let chords = this.scan(capture, CHORDS_REGEX);
+        chords = flatten(chords);
 
-      if (chord) {
-        chord = chord.replace("[", "").replace("]", "");
+        const measure = new Measure();
+        measure.chords = chords;
+        measures.push(measure);
       }
 
-      if (chord === undefined) {
-        chord = "";
-      }
-      if (lyric === undefined) {
-        lyric = "";
+      line.measures = measures;
+    } else if (text.startsWith(">")) {
+      const matches = COMMENT_REGEX.exec(text);
+
+      if (matches == null) {
+        return;
       }
 
-      part.chord = trim(chord);
-      part.lyric = trim(lyric);
+      line.comment = matches[1].trim();
+    } else {
+      let captures = this.scan(text, CHORDS_AND_LYRICS_REGEX);
+      captures = flatten(captures);
+      const groups = chunk(captures, 2);
 
-      if (!(part.chord === "" && part.lyric === "")) {
-        line.parts.push(part);
+      for (const group of groups) {
+        let chord = group[0];
+        let lyric = group[1];
+
+        const part = new Part();
+
+        if (chord) {
+          chord = chord.replace("[", "").replace("]", "");
+        }
+
+        if (chord === undefined) {
+          chord = "";
+        }
+        if (lyric === undefined) {
+          lyric = "";
+        }
+
+        part.chord = trim(chord);
+        part.lyric = trim(lyric);
+
+        if (!(part.chord === "" && part.lyric === "")) {
+          line.parts.push(part);
+        }
       }
     }
 

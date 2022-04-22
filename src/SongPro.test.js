@@ -1,6 +1,6 @@
 import { SongPro } from "./SongPro";
 
-test("attribute parsing", () => {
+test("attributes", () => {
   const song = SongPro.parse(`
 @title=Bad Moon Rising
 @artist=Creedence Clearwater Revival
@@ -22,7 +22,7 @@ test("attribute parsing", () => {
   expect(song.attrs.tuning).toEqual("Eb Standard");
 });
 
-test("custom attribute parsing", () => {
+test("custom attributes", () => {
   const song = SongPro.parse(`
 !difficulty=Easy
 !spotify_url=https://open.spotify.com/track/5zADxJhJEzuOstzcUtXlXv?si=SN6U1oveQ7KNfhtD2NHf9A
@@ -102,4 +102,50 @@ test("lyrics before chords", () => {
   expect(song.sections[0].lines[0].parts[1].lyric).toEqual(
     "bound to take your life"
   );
+});
+
+test("measures", () => {
+  const song = SongPro.parse(`
+# Instrumental
+
+| [A] [B] | [C] | [D] [E] [F] [G] |
+`);
+
+  expect(song.sections.length).toEqual(1);
+  expect(song.sections[0].lines[0].hasMeasures()).toEqual(true);
+  expect(song.sections[0].lines[0].measures.length).toEqual(3);
+  expect(song.sections[0].lines[0].measures[0].chords).toEqual(["A", "B"]);
+  expect(song.sections[0].lines[0].measures[1].chords).toEqual(["C"]);
+  expect(song.sections[0].lines[0].measures[2].chords).toEqual([
+    "D",
+    "E",
+    "F",
+    "G",
+  ]);
+});
+
+test("tablature", () => {
+  const song = SongPro.parse(`
+# Riff
+
+|-3---5-|
+|---4---|
+`);
+  expect(song.sections.length).toEqual(1);
+  expect(song.sections[0].lines[0].hasTablature()).toEqual(true);
+  expect(song.sections[0].lines[0].tablature).toEqual("|-3---5-|");
+  expect(song.sections[0].lines[1].hasTablature()).toEqual(true);
+  expect(song.sections[0].lines[1].tablature).toEqual("|---4---|");
+});
+
+test("comments", () => {
+  const song = SongPro.parse(`
+# Comment
+
+> This is a comment.
+`);
+
+  expect(song.sections.length).toEqual(1);
+  expect(song.sections[0].lines[0].hasComment()).toEqual(true);
+  expect(song.sections[0].lines[0].comment).toEqual("This is a comment.");
 });
