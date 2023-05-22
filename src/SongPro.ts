@@ -1,5 +1,4 @@
-import { Line } from "./Line";
-import { IMeasure, IPart, ISection, ISong } from "./types";
+import { IMeasure, IPart, ISection, ISong, Line } from "./models";
 
 const SECTION_REGEX = /#\s*([^$]*)/;
 const ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
@@ -10,7 +9,7 @@ const MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
 const CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
 const COMMENT_REGEX = />\s*([^$]*)/;
 
-export class SongPro {
+export default class SongPro {
   public static parse(text: string): ISong {
     const song: ISong = {
       attrs: {},

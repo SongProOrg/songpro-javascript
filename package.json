@@ -9,6 +9,7 @@
   "files": [
     "dist/songpro.js"
   ],
+  "types": "dist/SongPro.d.ts",
   "scripts": {
     "test": "jest",
     "test-coverage": "jest --coverage",

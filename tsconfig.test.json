@@ -3,7 +3,6 @@
   "compilerOptions": {
     "types": ["jest"],
     "outDir": "./out-test",
-    "outFile": "./out-test/index.js",
   },
   "include": ["./**/*.test.ts", "./**/*.d.ts"],
   "exclude": ["./dist/**/*", "./out-test/**/*"]

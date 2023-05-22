@@ -1,5 +1,3 @@
-import { Line } from "./Line";
-
 export interface ISong {
   attrs: {
     [key: string]: string | undefined;
@@ -28,4 +26,23 @@ export interface IMeasure {
 export interface IPart {
   chord?: string;
   lyric?: string;
+}
+
+export class Line {
+  parts: IPart[] = [];
+  measures?: IMeasure[];
+  tablature?: string;
+  comment?: string;
+
+  hasTablature(): boolean {
+    return this.tablature !== undefined;
+  }
+
+  hasMeasures(): boolean {
+    return this.measures !== undefined;
+  }
+
+  hasComment(): boolean {
+    return this.comment !== undefined;
+  }
 }
