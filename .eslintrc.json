@@ -2,7 +2,7 @@
   "root": true,
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": ["src/**/*.ts"],
       "parserOptions": {
         "project": ["tsconfig.json"]
       },
@@ -40,7 +40,10 @@
       }
     },
     {
-      "files": ["*.test.ts"],
+      "files": ["src/**/*.test.ts"],
+      "parserOptions": {
+        "project": ["tsconfig.test.json"]
+      },
       "rules": {
         "@typescript-eslint/no-non-null-assertion": ["off"],
         "@typescript-eslint/explicit-function-return-type": "off"
