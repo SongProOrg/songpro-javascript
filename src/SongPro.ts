@@ -1,5 +1,5 @@
 import { Line } from "./Line";
-import { chunk, flatten } from "lodash";
+import { chunk } from "lodash";
 import { IMeasure, IPart, ISection, ISong } from "./types";
 
 const SECTION_REGEX = /#\s*([^$]*)/;
@@ -177,13 +177,6 @@ export class SongPro {
 
   private static scan(str: string, pattern: RegExp): (string | undefined)[] {
     if (!pattern.global) throw new Error("regex must have 'global' flag set");
-
-    const results: string[][] = [];
-    str.replace(pattern, function () {
-      results.push(Array.prototype.slice.call(arguments, 1, -2));
-      return "";
-    });
-
-    return flatten(results);
+    return [...str.matchAll(pattern)].flatMap((m) => m.slice(1));
   }
 }
