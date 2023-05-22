@@ -57,11 +57,14 @@ export class SongPro {
     song.custom[matches[1]] = matches[2];
   }
 
-  private static processSection(song: ISong, line: string): ISection | undefined {
+  private static processSection(
+    song: ISong,
+    line: string
+  ): ISection | undefined {
     const matches = SECTION_REGEX.exec(line);
 
     if (matches == null || matches[1] == null) {
-      return
+      return;
     }
 
     const currentSection: ISection = {
@@ -96,14 +99,12 @@ export class SongPro {
     if (text.startsWith("|-")) {
       line.tablature = text;
     } else if (text.startsWith("| ")) {
-      let captures = this.scan(text, MEASURES_REGEX);
-      captures = flatten(captures);
+      const captures = this.scan(text, MEASURES_REGEX);
 
       const measures = [];
 
       for (const capture of captures) {
-        let chords = this.scan(capture, CHORDS_REGEX);
-        chords = flatten(chords);
+        const chords = this.scan(capture, CHORDS_REGEX);
 
         const measure: IMeasure = {
           chords: [],
@@ -122,8 +123,7 @@ export class SongPro {
 
       line.comment = matches[1].trim();
     } else {
-      let captures = this.scan(text, CHORDS_AND_LYRICS_REGEX);
-      captures = flatten(captures);
+      const captures = this.scan(text, CHORDS_AND_LYRICS_REGEX);
       const groups = chunk(captures, 2);
 
       for (const group of groups) {
@@ -143,7 +143,7 @@ export class SongPro {
 
         const part: IPart = {
           chord: chord.trim(),
-          lyric: lyric.trim()
+          lyric: lyric.trim(),
         };
 
         if (!(part.chord === "" && part.lyric === "")) {
@@ -155,15 +155,14 @@ export class SongPro {
     currentSection.lines.push(line);
   }
 
-  private static scan(str: string, pattern: RegExp): any[] {
+  private static scan(str: string, pattern: RegExp): string[] {
     if (!pattern.global) throw new Error("regex must have 'global' flag set");
-    //@ts-expect-error
-    const results = [];
-    //@ts-expect-error
-    str.replace(pattern, () => {
+    const results: string[][] = [];
+    str.replace(pattern, function() {
       results.push(Array.prototype.slice.call(arguments, 1, -2));
+      return '';
     });
-    //@ts-expect-error
-    return results;
+    
+    return flatten(results);
   }
 }
