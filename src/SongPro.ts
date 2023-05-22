@@ -1,9 +1,6 @@
-import { ISong } from "./Song";
-import { ISection } from "./Section";
 import { Line } from "./Line";
 import { chunk, flatten } from "lodash";
-import { IMeasure as IMeasure } from "./Measure";
-import { IPart } from "./Part";
+import { IMeasure, IPart, ISection, ISong } from "./types";
 
 const SECTION_REGEX = /#\s*([^$]*)/;
 const ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;

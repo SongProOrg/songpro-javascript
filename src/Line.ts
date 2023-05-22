@@ -1,5 +1,4 @@
-import { IMeasure } from "./Measure";
-import { IPart } from "./Part";
+import { IMeasure, IPart } from "./types";
 
 export class Line {
   public parts: IPart[] = [];

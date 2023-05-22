@@ -1,4 +1,4 @@
-import { ISection } from "./Section";
+import { Line } from "./Line";
 
 export interface ISong {
   attrs: {
@@ -13,5 +13,19 @@ export interface ISong {
     tuning?: string;
   };
   sections: ISection[];
-  custom: { [key: string]: string };
+  custom: Record<string, string>;
+}
+
+export interface ISection {
+  lines: Line[];
+  name: string;
+}
+
+export interface IMeasure {
+  chords: any[];
+}
+
+export interface IPart {
+  chord?: string;
+  lyric?: string;
 }
