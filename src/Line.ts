@@ -1,20 +1,21 @@
+import { IMeasure } from "./Measure";
+import { IPart } from "./Part";
+
 export class Line {
-  constructor() {
-    this.parts = [];
-    this.measures = null;
-    this.tablature = null;
-    this.comment = null;
+  public parts: IPart[] = [];
+  public measures: IMeasure[] | undefined;
+  public tablature: string | undefined;
+  public comment: string | undefined;
+
+  public hasTablature(): boolean {
+    return this.tablature != undefined;
   }
 
-  hasTablature() {
-    return this.tablature != null;
+  public hasMeasures(): boolean {
+    return this.measures != undefined;
   }
 
-  hasMeasures() {
-    return this.measures != null;
-  }
-
-  hasComment() {
-    return this.comment != null;
+  public hasComment(): boolean {
+    return this.comment != undefined;
   }
 }

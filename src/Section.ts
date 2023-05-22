@@ -1,6 +1,6 @@
-export class Section {
-  constructor(name) {
-    this.name = name;
-    this.lines = [];
-  }
+import { Line } from "./Line";
+
+export interface ISection {
+  lines: Line[];
+  name: string;
 }

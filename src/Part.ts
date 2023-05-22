@@ -1,6 +1,4 @@
-export class Part {
-  constructor() {
-    this.chord = null;
-    this.lyric = null;
-  }
+export interface IPart {
+  chord?: string;
+  lyric?: string;
 }

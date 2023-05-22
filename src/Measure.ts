@@ -1,5 +1,3 @@
-export class Measure {
-  constructor() {
-    this.chords = [];
-  }
+export interface IMeasure {
+  chords: any[];
 }

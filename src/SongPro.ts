@@ -1,9 +1,9 @@
-import { Song } from "./Song";
-import { Section } from "./Section";
+import { ISong } from "./Song";
+import { ISection } from "./Section";
 import { Line } from "./Line";
-import { chunk, flatten, trim } from "lodash";
-import { Part } from "./Part";
-import { Measure } from "./Measure";
+import { chunk, flatten } from "lodash";
+import { IMeasure as IMeasure } from "./Measure";
+import { IPart } from "./Part";
 
 const SECTION_REGEX = /#\s*([^$]*)/;
 const ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
@@ -15,9 +15,13 @@ const CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
 const COMMENT_REGEX = />\s*([^$]*)/;
 
 export class SongPro {
-  static parse(text) {
-    const song = new Song();
-    let currentSection = null;
+  public static parse(text: string): ISong {
+    const song: ISong = {
+      attrs: {},
+      sections: [],
+      custom: {},
+    };
+    let currentSection: ISection | undefined;
 
     const lines = text.split("\n");
 
@@ -36,47 +40,57 @@ export class SongPro {
     return song;
   }
 
-  static processAttribute(song, line) {
+  private static processAttribute(song: ISong, line: string): void {
     const matches = ATTRIBUTE_REGEX.exec(line);
 
-    if (matches == null) {
+    if (matches == null || matches[1] == null || matches[2] == null) {
       return;
     }
 
     song.attrs[matches[1]] = matches[2];
   }
 
-  static processCustomAttribute(song, line) {
+  private static processCustomAttribute(song: ISong, line: string): void {
     const matches = CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
-    if (matches == null) {
+    if (matches == null || matches[1] == null || matches[2] == null) {
       return;
     }
 
     song.custom[matches[1]] = matches[2];
   }
 
-  static processSection(song, line) {
+  private static processSection(song: ISong, line: string): ISection | undefined {
     const matches = SECTION_REGEX.exec(line);
 
-    if (matches == null) {
-      return;
+    if (matches == null || matches[1] == null) {
+      return
     }
 
-    const name = matches[1];
-    const currentSection = new Section(name);
+    const currentSection: ISection = {
+      name: matches[1],
+      lines: [],
+    };
+
     song.sections.push(currentSection);
 
     return currentSection;
   }
 
-  static processLyricsAndChords(song, currentSection, text) {
+  private static processLyricsAndChords(
+    song: ISong,
+    currentSection: ISection | undefined,
+    text: string
+  ): void {
     if (text === "") {
       return;
     }
 
-    if (currentSection == null) {
-      currentSection = new Section("");
+    if (currentSection === undefined) {
+      currentSection = {
+        name: "",
+        lines: [],
+      };
       song.sections.push(currentSection);
     }
 
@@ -94,7 +108,9 @@ export class SongPro {
         let chords = this.scan(capture, CHORDS_REGEX);
         chords = flatten(chords);
 
-        const measure = new Measure();
+        const measure: IMeasure = {
+          chords: [],
+        };
         measure.chords = chords;
         measures.push(measure);
       }
@@ -103,7 +119,7 @@ export class SongPro {
     } else if (text.startsWith(">")) {
       const matches = COMMENT_REGEX.exec(text);
 
-      if (matches == null) {
+      if (matches == null || matches[1] == null) {
         return;
       }
 
@@ -117,8 +133,6 @@ export class SongPro {
         let chord = group[0];
         let lyric = group[1];
 
-        const part = new Part();
-
         if (chord) {
           chord = chord.replace("[", "").replace("]", "");
         }
@@ -130,8 +144,10 @@ export class SongPro {
           lyric = "";
         }
 
-        part.chord = trim(chord);
-        part.lyric = trim(lyric);
+        const part: IPart = {
+          chord: chord.trim(),
+          lyric: lyric.trim()
+        };
 
         if (!(part.chord === "" && part.lyric === "")) {
           line.parts.push(part);
@@ -142,12 +158,15 @@ export class SongPro {
     currentSection.lines.push(line);
   }
 
-  static scan(string, regex) {
-    if (!regex.global) throw new Error("regex must have 'global' flag set");
+  private static scan(str: string, pattern: RegExp): any[] {
+    if (!pattern.global) throw new Error("regex must have 'global' flag set");
+    //@ts-expect-error
     const results = [];
-    string.replace(regex, function () {
+    //@ts-expect-error
+    str.replace(pattern, () => {
       results.push(Array.prototype.slice.call(arguments, 1, -2));
     });
+    //@ts-expect-error
     return results;
   }
 }
