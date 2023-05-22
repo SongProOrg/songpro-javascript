@@ -1,5 +1,4 @@
 import { Line } from "./Line";
-import { chunk } from "lodash";
 import { IMeasure, IPart, ISection, ISong } from "./types";
 
 const SECTION_REGEX = /#\s*([^$]*)/;
@@ -107,7 +106,7 @@ export class SongPro {
       line.comment = this.getComment(text);
     } else {
       const captures = this.scan(text, CHORDS_AND_LYRICS_REGEX);
-      const groups = chunk(captures, 2);
+      const groups = this.chunk(captures, 2);
 
       for (const group of groups) {
         const part = this.getPart(group[0], group[1]);
@@ -173,6 +172,14 @@ export class SongPro {
     };
 
     return part;
+  }
+
+  private static chunk<T>(arr: T[], chunkSize = 1, cache: T[][] = []): T[][] {
+    //Adapted from https://youmightnotneed.com/lodash/#chunk
+    const tmp = [...arr];
+    if (chunkSize <= 0) return cache;
+    while (tmp.length) cache.push(tmp.splice(0, chunkSize));
+    return cache;
   }
 
   private static scan(str: string, pattern: RegExp): (string | undefined)[] {
