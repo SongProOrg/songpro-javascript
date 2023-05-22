@@ -14,8 +14,8 @@
     "test-coverage": "jest --coverage",
     "lint": "eslint --fix src/**/*.ts",
     "build-test": "tsc --project tsconfig.test.json",
-    "build-proj": "tsc --project tsconfig.json",
-    "build": "npm run lint && tsc && npm run test"
+    "build-app": "tsc --project tsconfig.json",
+    "build": "npm run lint && npm run test && npm run build-app"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
