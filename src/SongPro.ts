@@ -47,16 +47,16 @@ export class Line {
   }
 }
 
-const SECTION_REGEX = /#\s*([^$]*)/;
-const ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
-const CUSTOM_ATTRIBUTE_REGEX = /!(\w*)=([^%]*)/;
-const CHORDS_AND_LYRICS_REGEX = /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
-
-const MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
-const CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
-const COMMENT_REGEX = />\s*([^$]*)/;
-
 export class SongPro {
+  private static readonly SECTION_REGEX = /#\s*([^$]*)/;
+  private static readonly ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
+  private static readonly CUSTOM_ATTRIBUTE_REGEX = /!(\w*)=([^%]*)/;
+  private static readonly CHORDS_AND_LYRICS_REGEX = /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
+
+  private static readonly MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
+  private static readonly CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
+  private static readonly COMMENT_REGEX = />\s*([^$]*)/;
+
   public static parse(text: string): ISong {
     const song: ISong = {
       attrs: {},
@@ -83,7 +83,7 @@ export class SongPro {
   }
 
   private static processAttribute(song: ISong, line: string): void {
-    const matches = ATTRIBUTE_REGEX.exec(line);
+    const matches = this.ATTRIBUTE_REGEX.exec(line);
 
     if (matches?.[1] != null) {
       song.attrs[matches[1]] = matches[2];
@@ -91,7 +91,7 @@ export class SongPro {
   }
 
   private static processCustomAttribute(song: ISong, line: string): void {
-    const matches = CUSTOM_ATTRIBUTE_REGEX.exec(line);
+    const matches = this.CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
     if (matches?.[1] != null && matches[2] != null) {
       song.custom[matches[1]] = matches[2];
@@ -99,7 +99,7 @@ export class SongPro {
   }
 
   private static processSection(song: ISong, line: string): ISection {
-    const matches = SECTION_REGEX.exec(line);
+    const matches = this.SECTION_REGEX.exec(line);
 
     const currentSection: ISection = {
       name: "",
@@ -143,7 +143,7 @@ export class SongPro {
     } else if (text.startsWith(">")) {
       line.comment = this.getComment(text);
     } else {
-      const captures = this.scan(text, CHORDS_AND_LYRICS_REGEX);
+      const captures = this.scan(text, this.CHORDS_AND_LYRICS_REGEX);
       const groupedCaptures = this.chunk(captures, 2);
       for (const group of groupedCaptures) {
         const part = this.getPart(group[0], group[1]);
@@ -158,14 +158,14 @@ export class SongPro {
   }
 
   private static getMeasures(text: string): IMeasure[] {
-    const capturesList = this.scan(text, MEASURES_REGEX);
+    const capturesList = this.scan(text, this.MEASURES_REGEX);
 
     const measures: IMeasure[] = [];
 
     for (const capture of capturesList) {
       let chords: (string | undefined)[] = [];
       if (capture !== undefined) {
-        chords = this.scan(capture, CHORDS_REGEX);
+        chords = this.scan(capture, this.CHORDS_REGEX);
       }
 
       const measure: IMeasure = {
@@ -179,7 +179,7 @@ export class SongPro {
   }
 
   private static getComment(text: string): string {
-    const matches = COMMENT_REGEX.exec(text);
+    const matches = this.COMMENT_REGEX.exec(text);
 
     //If we got to this point, the regex will always match and have the first capture group
     //We can confidently tell typescript that these values will never be null, even with empty comment sections

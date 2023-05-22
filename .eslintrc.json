@@ -13,7 +13,6 @@
       "rules": {
         "@typescript-eslint/explicit-function-return-type": "warn",
         "@typescript-eslint/method-signature-style": ["warn"],
-        "@typescript-eslint/naming-convention": "warn",
         "@typescript-eslint/no-extraneous-class": "off",
         "no-invalid-this": "off",
         "@typescript-eslint/no-invalid-this": "error",
