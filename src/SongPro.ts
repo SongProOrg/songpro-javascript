@@ -20,17 +20,17 @@ export class SongPro {
     };
     let currentSection: ISection | undefined;
 
-    const lines = text.split("\n");
+    const linesArr = text.split("\n");
 
-    for (const text of lines) {
-      if (text.startsWith("@")) {
-        this.processAttribute(song, text);
-      } else if (text.startsWith("!")) {
-        this.processCustomAttribute(song, text);
-      } else if (text.startsWith("#")) {
-        currentSection = this.processSection(song, text);
+    for (const line of linesArr) {
+      if (line.startsWith("@")) {
+        this.processAttribute(song, line);
+      } else if (line.startsWith("!")) {
+        this.processCustomAttribute(song, line);
+      } else if (line.startsWith("#")) {
+        currentSection = this.processSection(song, line);
       } else {
-        this.processLyricsAndChords(song, currentSection, text);
+        this.processLyricsAndChords(song, currentSection, line);
       }
     }
 
