@@ -1,6 +1,6 @@
 import { Line } from "./Line";
 import { chunk, flatten } from "lodash";
-import { IMeasure, IPart, ISection, ISong } from "./types";
+import { IMatchArray, IMeasure, IPart, ISection, ISong } from "./types";
 
 const SECTION_REGEX = /#\s*([^$]*)/;
 const ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
@@ -99,12 +99,15 @@ export class SongPro {
     if (text.startsWith("|-")) {
       line.tablature = text;
     } else if (text.startsWith("| ")) {
-      const captures = this.scan(text, MEASURES_REGEX);
+      const capturesList = this.scan(text, MEASURES_REGEX);
 
-      const measures = [];
+      const measures: IMeasure[] = [];
 
-      for (const capture of captures) {
-        const chords = this.scan(capture, CHORDS_REGEX);
+      for (const capture of capturesList) {
+        let chords: IMatchArray = [];
+        if (capture !== undefined ) {
+          chords = this.scan(capture, CHORDS_REGEX);
+        }
 
         const measure: IMeasure = {
           chords: [],
@@ -130,7 +133,7 @@ export class SongPro {
         let chord = group[0];
         let lyric = group[1];
 
-        if (chord) {
+        if (chord !== undefined) {
           chord = chord.replace("[", "").replace("]", "");
         }
 
@@ -155,14 +158,15 @@ export class SongPro {
     currentSection.lines.push(line);
   }
 
-  private static scan(str: string, pattern: RegExp): string[] {
+  private static scan(str: string, pattern: RegExp): IMatchArray {
     if (!pattern.global) throw new Error("regex must have 'global' flag set");
+
     const results: string[][] = [];
-    str.replace(pattern, function() {
+    str.replace(pattern, function () {
       results.push(Array.prototype.slice.call(arguments, 1, -2));
-      return '';
+      return "";
     });
-    
+
     return flatten(results);
   }
 }

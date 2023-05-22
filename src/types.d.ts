@@ -1,5 +1,7 @@
 import { Line } from "./Line";
 
+export type IMatchArray = (string | undefined)[];
+
 export interface ISong {
   attrs: {
     [key: string]: string | undefined;
@@ -22,7 +24,7 @@ export interface ISection {
 }
 
 export interface IMeasure {
-  chords: any[];
+  chords: IMatchArray;
 }
 
 export interface IPart {
