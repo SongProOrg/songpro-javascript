@@ -7,9 +7,9 @@
   "license": "MIT",
   "main": "dist/songpro.js",
   "files": [
-    "dist/songpro.js"
+    "dist/**/*"
   ],
-  "types": "dist/SongPro.d.ts",
+  "types": "dist/songpro.d.ts",
   "scripts": {
     "test": "jest",
     "test-coverage": "jest --coverage",

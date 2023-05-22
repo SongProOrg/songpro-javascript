@@ -1,4 +1,4 @@
-import { SongPro } from "./SongPro";
+import { SongPro } from "./songpro";
 
 describe("Attributes", () => {
   it("should properly final all regular attributes", () => {

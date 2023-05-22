@@ -1,4 +1,51 @@
-import { IMeasure, IPart, ISection, ISong, Line } from "./models";
+export interface ISong {
+  attrs: {
+    [key: string]: string | undefined;
+    title?: string;
+    artist?: string;
+    capo?: string;
+    key?: string;
+    tempo?: string;
+    year?: string;
+    album?: string;
+    tuning?: string;
+  };
+  sections: ISection[];
+  custom: Record<string, string>;
+}
+
+export interface ISection {
+  lines: Line[];
+  name: string;
+}
+
+export interface IMeasure {
+  chords: (string | undefined)[];
+}
+
+export interface IPart {
+  chord?: string;
+  lyric?: string;
+}
+
+export class Line {
+  parts: IPart[] = [];
+  measures?: IMeasure[];
+  tablature?: string;
+  comment?: string;
+
+  hasTablature(): boolean {
+    return this.tablature !== undefined;
+  }
+
+  hasMeasures(): boolean {
+    return this.measures !== undefined;
+  }
+
+  hasComment(): boolean {
+    return this.comment !== undefined;
+  }
+}
 
 const SECTION_REGEX = /#\s*([^$]*)/;
 const ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
@@ -9,7 +56,7 @@ const MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
 const CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
 const COMMENT_REGEX = />\s*([^$]*)/;
 
-export default class SongPro {
+export class SongPro {
   public static parse(text: string): ISong {
     const song: ISong = {
       attrs: {},
@@ -146,7 +193,7 @@ export default class SongPro {
     let chord: string | undefined;
     let lyric = "";
 
-    if(inputLyric != null){
+    if (inputLyric != null) {
       lyric = inputLyric;
     }
 
@@ -183,3 +230,5 @@ export default class SongPro {
     return [...str.matchAll(pattern)].flatMap((m) => m.slice(1));
   }
 }
+
+module.exports =  SongPro;
