@@ -10,9 +10,9 @@
     "dist/songpro.js"
   ],
   "scripts": {
-    "test": "jest --coverage",
+    "test": "tsc && jest --coverage",
     "lint": "eslint --fix src/**/*.ts",
-    "build": "npm run lint && npm test && tsc"
+    "build": "npm run lint && tsc && npm test"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
