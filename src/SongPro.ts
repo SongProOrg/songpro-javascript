@@ -1,6 +1,6 @@
 import { Line } from "./Line";
 import { chunk, flatten } from "lodash";
-import { IMatchArray, IMeasure, IPart, ISection, ISong } from "./types";
+import { IMeasure, IPart, ISection, ISong } from "./types";
 
 const SECTION_REGEX = /#\s*([^$]*)/;
 const ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
@@ -82,72 +82,35 @@ export class SongPro {
     currentSection: ISection | undefined,
     text: string
   ): void {
-    if (text === "") {
-      return;
-    }
+    if (text !== "") {
+      if (currentSection === undefined) {
+        currentSection = {
+          name: "",
+          lines: [],
+        };
+        song.sections.push(currentSection);
+      }
 
-    if (currentSection === undefined) {
-      currentSection = {
-        name: "",
-        lines: [],
-      };
-      song.sections.push(currentSection);
+      const line = this.buildLine(text);
+      currentSection.lines.push(line);
     }
+  }
 
+  private static buildLine(text: string): Line {
     const line = new Line();
 
     if (text.startsWith("|-")) {
       line.tablature = text;
     } else if (text.startsWith("| ")) {
-      const capturesList = this.scan(text, MEASURES_REGEX);
-
-      const measures: IMeasure[] = [];
-
-      for (const capture of capturesList) {
-        let chords: IMatchArray = [];
-        if (capture !== undefined ) {
-          chords = this.scan(capture, CHORDS_REGEX);
-        }
-
-        const measure: IMeasure = {
-          chords: [],
-        };
-        measure.chords = chords;
-        measures.push(measure);
-      }
-
-      line.measures = measures;
+      line.measures = this.getMeasures(text);
     } else if (text.startsWith(">")) {
-      const matches = COMMENT_REGEX.exec(text);
-
-      if (matches == null || matches[1] == null) {
-        return;
-      }
-
-      line.comment = matches[1].trim();
+      line.comment = this.getComment(text);
     } else {
       const captures = this.scan(text, CHORDS_AND_LYRICS_REGEX);
       const groups = chunk(captures, 2);
 
       for (const group of groups) {
-        let chord = group[0];
-        let lyric = group[1];
-
-        if (chord !== undefined) {
-          chord = chord.replace("[", "").replace("]", "");
-        }
-
-        if (chord === undefined) {
-          chord = "";
-        }
-        if (lyric === undefined) {
-          lyric = "";
-        }
-
-        const part: IPart = {
-          chord: chord.trim(),
-          lyric: lyric.trim(),
-        };
+        const part = this.getPart(group[0], group[1]);
 
         if (!(part.chord === "" && part.lyric === "")) {
           line.parts.push(part);
@@ -155,10 +118,64 @@ export class SongPro {
       }
     }
 
-    currentSection.lines.push(line);
+    return line;
   }
 
-  private static scan(str: string, pattern: RegExp): IMatchArray {
+  private static getMeasures(text: string): IMeasure[] {
+    const capturesList = this.scan(text, MEASURES_REGEX);
+
+    const measures: IMeasure[] = [];
+
+    for (const capture of capturesList) {
+      let chords: (string | undefined)[] = [];
+      if (capture !== undefined) {
+        chords = this.scan(capture, CHORDS_REGEX);
+      }
+
+      const measure: IMeasure = {
+        chords: [],
+      };
+      measure.chords = chords;
+      measures.push(measure);
+    }
+
+    return measures;
+  }
+
+  private static getComment(text: string): string | undefined {
+    const matches = COMMENT_REGEX.exec(text);
+
+    if (matches == null || matches[1] == null) {
+      return undefined;
+    }
+
+    return matches[1].trim();
+  }
+
+  private static getPart(
+    inputChord: string | undefined,
+    inputLyric: string | undefined
+  ): IPart {
+    let chord: string | undefined;
+    const lyric = inputLyric === undefined ? "" : inputLyric;
+
+    if (inputChord !== undefined) {
+      chord = inputChord.replace("[", "").replace("]", "");
+    }
+
+    if (chord === undefined) {
+      chord = "";
+    }
+
+    const part: IPart = {
+      chord: chord.trim(),
+      lyric: lyric.trim(),
+    };
+
+    return part;
+  }
+
+  private static scan(str: string, pattern: RegExp): (string | undefined)[] {
     if (!pattern.global) throw new Error("regex must have 'global' flag set");
 
     const results: string[][] = [];
