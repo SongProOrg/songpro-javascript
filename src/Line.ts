@@ -2,9 +2,9 @@ import { IMeasure, IPart } from "./types";
 
 export class Line {
   parts: IPart[] = [];
-  measures: IMeasure[] | undefined;
-  tablature: string | undefined;
-  comment: string | undefined;
+  measures?: IMeasure[];
+  tablature?: string;
+  comment?: string;
 
   hasTablature(): boolean {
     return this.tablature !== undefined;

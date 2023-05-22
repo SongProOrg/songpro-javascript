@@ -149,3 +149,62 @@ test("comments", () => {
   expect(song.sections[0]!.lines[0]!.hasComment()).toEqual(true);
   expect(song.sections[0]!.lines[0]!.comment).toEqual("This is a comment.");
 });
+
+describe("Edge Cases", () => {
+  test("Empty Song", () => {
+    const song = SongPro.parse(" ");
+    expect(song.sections.length).toBe(1);
+    expect(song.sections[0]!.lines.length).toBe(1);
+    expect(song.sections[0]!.lines[0]!.parts.length).toBe(0);
+  });
+
+  test("Empty Attribute", () => {
+    const song = SongPro.parse(`
+@
+`);
+
+    expect(song.attrs.title).toBeUndefined();
+    expect(song.attrs.artist).toBeUndefined();
+    expect(song.attrs.capo).toBeUndefined();
+    expect(song.attrs.key).toBeUndefined();
+    expect(song.attrs.tempo).toBeUndefined();
+    expect(song.attrs.year).toBeUndefined();
+    expect(song.attrs.album).toBeUndefined();
+    expect(song.attrs.tuning).toBeUndefined();
+  });
+
+  test("Broken Attribute", () => {
+    const song = SongPro.parse(`
+@title=
+`);
+
+    expect(song.attrs.title).toEqual("");
+    expect(song.attrs.artist).toBeUndefined();
+    expect(song.attrs.capo).toBeUndefined();
+    expect(song.attrs.key).toBeUndefined();
+    expect(song.attrs.tempo).toBeUndefined();
+    expect(song.attrs.year).toBeUndefined();
+    expect(song.attrs.album).toBeUndefined();
+    expect(song.attrs.tuning).toBeUndefined();
+  });
+
+  test("Empty/Broken Custom Attribute", () => {
+    const song = SongPro.parse(`
+@
+`);
+
+    expect(song.custom).toEqual({});
+  });
+
+  test("Empty/Broken Comments", () => {
+    const song = SongPro.parse(`
+#
+
+>
+`);
+
+    expect(song.sections.length).toEqual(1);
+    expect(song.sections[0]!.lines[0]!.hasComment()).toEqual(true);
+    expect(song.sections[0]!.lines[0]!.comment).toEqual("");
+  });
+});

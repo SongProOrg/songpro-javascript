@@ -15,7 +15,7 @@
     "lint": "eslint --fix src/**/*.ts",
     "build-test": "tsc --project tsconfig.test.json",
     "build-app": "tsc --project tsconfig.json",
-    "build": "npm run lint && npm run test && npm run build-app"
+    "build": "npm run lint && npm run test-coverage && npm run build-app"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",

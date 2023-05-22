@@ -39,39 +39,31 @@ export class SongPro {
   private static processAttribute(song: ISong, line: string): void {
     const matches = ATTRIBUTE_REGEX.exec(line);
 
-    if (matches == null || matches[1] == null || matches[2] == null) {
-      return;
+    if (matches?.[1] != null) {
+      song.attrs[matches[1]] = matches[2];
     }
-
-    song.attrs[matches[1]] = matches[2];
   }
 
   private static processCustomAttribute(song: ISong, line: string): void {
     const matches = CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
-    if (matches == null || matches[1] == null || matches[2] == null) {
-      return;
+    if (matches?.[1] != null && matches[2] != null) {
+      song.custom[matches[1]] = matches[2];
     }
-
-    song.custom[matches[1]] = matches[2];
   }
 
-  private static processSection(
-    song: ISong,
-    line: string
-  ): ISection | undefined {
+  private static processSection(song: ISong, line: string): ISection {
     const matches = SECTION_REGEX.exec(line);
 
-    if (matches == null || matches[1] == null) {
-      return;
-    }
-
     const currentSection: ISection = {
-      name: matches[1],
+      name: "",
       lines: [],
     };
 
-    song.sections.push(currentSection);
+    if (matches?.[1] != null) {
+      currentSection.name = matches[1];
+      song.sections.push(currentSection);
+    }
 
     return currentSection;
   }
@@ -106,9 +98,8 @@ export class SongPro {
       line.comment = this.getComment(text);
     } else {
       const captures = this.scan(text, CHORDS_AND_LYRICS_REGEX);
-      const groups = this.chunk(captures, 2);
-
-      for (const group of groups) {
+      const groupedCaptures = this.chunk(captures, 2);
+      for (const group of groupedCaptures) {
         const part = this.getPart(group[0], group[1]);
 
         if (!(part.chord === "" && part.lyric === "")) {
@@ -141,14 +132,12 @@ export class SongPro {
     return measures;
   }
 
-  private static getComment(text: string): string | undefined {
+  private static getComment(text: string): string {
     const matches = COMMENT_REGEX.exec(text);
 
-    if (matches == null || matches[1] == null) {
-      return undefined;
-    }
-
-    return matches[1].trim();
+    //If we got to this point, the regex will always match and have the first capture group
+    //We can confidently tell typescript that these values will never be null, even with empty comment sections
+    return matches![1]!.trim();
   }
 
   private static getPart(
@@ -156,7 +145,11 @@ export class SongPro {
     inputLyric: string | undefined
   ): IPart {
     let chord: string | undefined;
-    const lyric = inputLyric === undefined ? "" : inputLyric;
+    let lyric = "";
+
+    if(inputLyric != null){
+      lyric = inputLyric;
+    }
 
     if (inputChord !== undefined) {
       chord = inputChord.replace("[", "").replace("]", "");
@@ -174,16 +167,20 @@ export class SongPro {
     return part;
   }
 
-  private static chunk<T>(arr: T[], chunkSize = 1, cache: T[][] = []): T[][] {
+  private static chunk<T>(
+    arr: T[],
+    chunkSize: number,
+    cache: T[][] = []
+  ): T[][] {
     //Adapted from https://youmightnotneed.com/lodash/#chunk
+    //Chunk size must be greater than 1
     const tmp = [...arr];
-    if (chunkSize <= 0) return cache;
     while (tmp.length) cache.push(tmp.splice(0, chunkSize));
     return cache;
   }
 
   private static scan(str: string, pattern: RegExp): (string | undefined)[] {
-    if (!pattern.global) throw new Error("regex must have 'global' flag set");
+    //Note: all patterns used here must have the 'global' flag set");
     return [...str.matchAll(pattern)].flatMap((m) => m.slice(1));
   }
 }
