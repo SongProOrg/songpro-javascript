@@ -48,7 +48,7 @@ fs.readFile('escape-capsule.md', function(err, contents) {
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/SongProOrg/songpro-js.
+Bug reports and pull requests are welcome on GitHub at https://github.com/SongProOrg/songpro-javascript
 
 ## License
 
