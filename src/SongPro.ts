@@ -1,4 +1,4 @@
-interface ISong {
+export interface ISongProSong {
   attrs: {
     [key: string]: string | undefined;
     title?: string;
@@ -10,27 +10,39 @@ interface ISong {
     album?: string;
     tuning?: string;
   };
-  sections: ISection[];
+  sections: ISongProSection[];
   custom: Record<string, string>;
 }
 
-interface ISection {
-  lines: Line[];
+export interface ISongProSection {
+  lines: ISongProLine[];
   name: string;
 }
 
-interface IMeasure {
+export interface ISongProLine {
+  parts: ISongProPart[];
+  measures?: ISongProMeasure[];
+  tablature?: string;
+  comment?: string;
+
+  hasTablature: () => boolean;
+  hasMeasures: () => boolean;
+  hasComment: () => boolean;
+}
+
+export interface ISongProMeasure {
   chords: (string | undefined)[];
 }
 
-interface IPart {
+export interface ISongProPart {
   chord?: string;
   lyric?: string;
 }
 
-class Line {
-  parts: IPart[] = [];
-  measures?: IMeasure[];
+//No need to export this class, the interface is exported.
+class Line implements ISongProLine {
+  parts: ISongProPart[] = [];
+  measures?: ISongProMeasure[];
   tablature?: string;
   comment?: string;
 
@@ -51,19 +63,20 @@ export class SongPro {
   private static readonly SECTION_REGEX = /#\s*([^$]*)/;
   private static readonly ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
   private static readonly CUSTOM_ATTRIBUTE_REGEX = /!(\w*)=([^%]*)/;
-  private static readonly CHORDS_AND_LYRICS_REGEX = /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
+  private static readonly CHORDS_AND_LYRICS_REGEX =
+    /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
 
   private static readonly MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
   private static readonly CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
   private static readonly COMMENT_REGEX = />\s*([^$]*)/;
 
-  public static parse(text: string): ISong {
-    const song: ISong = {
+  public static parse(text: string): ISongProSong {
+    const song: ISongProSong = {
       attrs: {},
       sections: [],
       custom: {},
     };
-    let currentSection: ISection | undefined;
+    let currentSection: ISongProSection | undefined;
 
     const linesArr = text.split("\n");
 
@@ -82,7 +95,7 @@ export class SongPro {
     return song;
   }
 
-  private static processAttribute(song: ISong, line: string): void {
+  private static processAttribute(song: ISongProSong, line: string): void {
     const matches = this.ATTRIBUTE_REGEX.exec(line);
 
     if (matches?.[1] != null) {
@@ -90,7 +103,10 @@ export class SongPro {
     }
   }
 
-  private static processCustomAttribute(song: ISong, line: string): void {
+  private static processCustomAttribute(
+    song: ISongProSong,
+    line: string
+  ): void {
     const matches = this.CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
     if (matches?.[1] != null && matches[2] != null) {
@@ -98,10 +114,13 @@ export class SongPro {
     }
   }
 
-  private static processSection(song: ISong, line: string): ISection {
+  private static processSection(
+    song: ISongProSong,
+    line: string
+  ): ISongProSection {
     const matches = this.SECTION_REGEX.exec(line);
 
-    const currentSection: ISection = {
+    const currentSection: ISongProSection = {
       name: "",
       lines: [],
     };
@@ -115,8 +134,8 @@ export class SongPro {
   }
 
   private static processLyricsAndChords(
-    song: ISong,
-    currentSection: ISection | undefined,
+    song: ISongProSong,
+    currentSection: ISongProSection | undefined,
     text: string
   ): void {
     if (text !== "") {
@@ -157,10 +176,10 @@ export class SongPro {
     return line;
   }
 
-  private static getMeasures(text: string): IMeasure[] {
+  private static getMeasures(text: string): ISongProMeasure[] {
     const capturesList = this.scan(text, this.MEASURES_REGEX);
 
-    const measures: IMeasure[] = [];
+    const measures: ISongProMeasure[] = [];
 
     for (const capture of capturesList) {
       let chords: (string | undefined)[] = [];
@@ -168,7 +187,7 @@ export class SongPro {
         chords = this.scan(capture, this.CHORDS_REGEX);
       }
 
-      const measure: IMeasure = {
+      const measure: ISongProMeasure = {
         chords: [],
       };
       measure.chords = chords;
@@ -189,7 +208,7 @@ export class SongPro {
   private static getPart(
     inputChord: string | undefined,
     inputLyric: string | undefined
-  ): IPart {
+  ): ISongProPart {
     let chord: string | undefined;
     let lyric = "";
 
@@ -205,7 +224,7 @@ export class SongPro {
       chord = "";
     }
 
-    const part: IPart = {
+    const part: ISongProPart = {
       chord: chord.trim(),
       lyric: lyric.trim(),
     };
