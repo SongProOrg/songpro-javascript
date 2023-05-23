@@ -6,10 +6,11 @@
     "baseUrl": "./",
     "declaration": true,
     "downlevelIteration": true,
-    "esModuleInterop":true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
+    "lib": ["ES2022", "dom"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -19,11 +20,11 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedParameters": true,
     "outDir": "./dist",
+    "removeComments": true,
     "strict": true,
     "target": "ES2022",
     "types": ["node"],
-    "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"]
+    "useDefineForClassFields": false
   },
   "include": ["./src/**/*.ts"],
   "exclude": ["./dist/**/*", "./src/**/*.test.ts"]
