@@ -1,4 +1,4 @@
-export interface ISong {
+interface ISong {
   attrs: {
     [key: string]: string | undefined;
     title?: string;
@@ -14,21 +14,21 @@ export interface ISong {
   custom: Record<string, string>;
 }
 
-export interface ISection {
+interface ISection {
   lines: Line[];
   name: string;
 }
 
-export interface IMeasure {
+interface IMeasure {
   chords: (string | undefined)[];
 }
 
-export interface IPart {
+interface IPart {
   chord?: string;
   lyric?: string;
 }
 
-export class Line {
+class Line {
   parts: IPart[] = [];
   measures?: IMeasure[];
   tablature?: string;
@@ -230,5 +230,3 @@ export class SongPro {
     return [...str.matchAll(pattern)].flatMap((m) => m.slice(1));
   }
 }
-
-module.exports =  SongPro;
