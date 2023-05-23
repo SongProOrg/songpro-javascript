@@ -1,17 +1,19 @@
 export interface ISongProSong {
-  attrs: {
-    [key: string]: string | undefined;
-    title?: string;
-    artist?: string;
-    capo?: string;
-    key?: string;
-    tempo?: string;
-    year?: string;
-    album?: string;
-    tuning?: string;
-  };
+  attrs: ISongProAttrs;
   sections: ISongProSection[];
   custom: Record<string, string>;
+}
+
+export interface ISongProAttrs {
+  [key: string]: string | undefined;
+  title?: string;
+  artist?: string;
+  capo?: string;
+  key?: string;
+  tempo?: string;
+  year?: string;
+  album?: string;
+  tuning?: string;
 }
 
 export interface ISongProSection {
