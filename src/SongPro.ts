@@ -25,9 +25,9 @@ export interface ISongProLine {
   tablature?: string;
   comment?: string;
 
-  hasTablature: () => boolean;
-  hasMeasures: () => boolean;
-  hasComment: () => boolean;
+  hasTablature: () => this is { tablature: string };
+  hasMeasures: () => this is { measures: ISongProMeasure[] };
+  hasComment: () => this is { comment: string };
 }
 
 export interface ISongProMeasure {
@@ -46,15 +46,19 @@ class Line implements ISongProLine {
   tablature?: string;
   comment?: string;
 
-  hasTablature(): boolean {
+  //These methods use TypeScript type predicates
+  // https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates
+  // When these functions are used it will assure the compiler that these types do exist
+  // without the developer having to add manual checks
+  hasTablature(): this is { tablature: string } {
     return this.tablature !== undefined;
   }
 
-  hasMeasures(): boolean {
+  hasMeasures(): this is { measures: ISongProMeasure[] } {
     return this.measures !== undefined;
   }
 
-  hasComment(): boolean {
+  hasComment(): this is { comment: string } {
     return this.comment !== undefined;
   }
 }
