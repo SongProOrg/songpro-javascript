@@ -35,8 +35,8 @@ export interface ISongProMeasure {
 }
 
 export interface ISongProPart {
-  chord?: string;
-  lyric?: string;
+  chord: string;
+  lyric: string;
 }
 
 //No need to export this class, the interface is exported.
