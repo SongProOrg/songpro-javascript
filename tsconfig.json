@@ -3,7 +3,6 @@
   "compilerOptions": {
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "baseUrl": "./",
     "declaration": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
