@@ -13,13 +13,12 @@
   "jest":{
     "modulePaths": ["<rootDir>/test"],
     "moduleDirectories": ["node_modules"],
-    "testPathIgnorePatterns": ["<rootDir>/src/"],
+    "testPathIgnorePatterns": ["<rootDir>/src"],
     "verbose": true
   },
-
   "scripts": {
-    "test": "npm run build-test && jest",
-    "test-coverage": "npm run build-test && jest --coverage",
+    "test": "jest",
+    "test-coverage": "jest --coverage",
     "lint": "eslint --fix src/**/*.ts",
     "build-test": "tsc --project tsconfig.test.json",
     "build-app": "tsc --project tsconfig.json",
