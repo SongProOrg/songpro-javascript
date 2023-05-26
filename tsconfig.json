@@ -8,7 +8,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "lib": ["ES2022", "dom"],
+    "lib": ["ES2017", "dom"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -20,7 +20,7 @@
     "outDir": "./dist",
     "removeComments": true,
     "strict": true,
-    "target": "ES2022",
+    "target": "ES2017",
     "types": ["node"],
     "useDefineForClassFields": false
   },
