@@ -35,7 +35,7 @@ You can parse the contents of the file to create a `Song` object:
 
 ```javascript
 const fs = require('fs');
-const SongPro = require('SongPro');
+const { SongPro } = require('songpro');
 
 fs.readFile('escape-capsule.md', function(err, contents) {
     let song = SongPro.parse(contents);
@@ -48,7 +48,7 @@ fs.readFile('escape-capsule.md', function(err, contents) {
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/SongProOrg/songpro-js.
+Bug reports and pull requests are welcome on GitHub at https://github.com/SongProOrg/songpro-javascript
 
 ## License
 
