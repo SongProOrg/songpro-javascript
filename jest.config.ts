@@ -3,7 +3,9 @@ import type { Config } from "@jest/types";
 // Sync object
 const config: Config.InitialOptions = {
   verbose: true,
-  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/test/"],
+  roots: ["<rootDir>"],
+  modulePaths: ["<rootDir>"],
+  moduleDirectories: ["node_modules"],
   transform: {
     "^.+\\.ts$": [
       "ts-jest",
