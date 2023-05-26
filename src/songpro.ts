@@ -124,14 +124,16 @@ export class SongPro {
     song: ISongProSong,
     line: string
   ): ISongProSection {
-    const matches = this.SECTION_REGEX.exec(line);
+    //This will always return a match no matter what
+    //Here it is safe to do a non-null assertion with !
+    const matches = this.SECTION_REGEX.exec(line)!;
 
     const currentSection: ISongProSection = {
       name: "",
       lines: [],
     };
 
-    if (matches?.[1] != null) {
+    if (matches[1] != null) {
       currentSection.name = matches[1];
       song.sections.push(currentSection);
     }
@@ -204,11 +206,13 @@ export class SongPro {
   }
 
   private static getComment(text: string): string {
-    const matches = this.COMMENT_REGEX.exec(text);
+    //This will always return a match no matter what
+    //Here it is safe to do a non-null assertions with !
+    const matches = this.COMMENT_REGEX.exec(text)!;
 
     //If we got to this point, the regex will always match and have the first capture group
     //We can confidently tell typescript that these values will never be null, even with empty comment sections
-    return matches![1]!.trim();
+    return matches[1]!.trim();
   }
 
   private static getPart(
