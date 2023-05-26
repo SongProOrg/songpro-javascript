@@ -5,7 +5,7 @@ const config: Config.InitialOptions = {
   verbose: true,
   roots: ["<rootDir>"],
   modulePaths: ["<rootDir>"],
-  moduleDirectories: ["node_modules"],
+  moduleDirectories: ["node_modules", "src"],
   transform: {
     "^.+\\.ts$": [
       "ts-jest",
