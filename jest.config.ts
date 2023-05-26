@@ -4,8 +4,8 @@ import type { Config } from "@jest/types";
 const config: Config.InitialOptions = {
   verbose: true,
   roots: ["<rootDir>"],
-  modulePaths: ["<rootDir>"],
-  moduleDirectories: ["node_modules", "src"],
+  modulePaths: ["<rootDir>", "src"],
+  moduleDirectories: ["node_modules"],
   transform: {
     "^.+\\.ts$": [
       "ts-jest",
