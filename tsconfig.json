@@ -24,6 +24,6 @@
     "types": ["node"],
     "useDefineForClassFields": false
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["./dist/**/*", "./src/**/*.test.ts"]
+  "include": ["src"],
+  "exclude": ["dist", "src/**/*.test.ts"]
 }

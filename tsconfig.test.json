@@ -3,8 +3,8 @@
   "compilerOptions": {
     "declaration": false,
     "types": ["jest", "node"],
-    "outDir": "./test/",
+    "outDir": "test/",
   },
-  "include": ["./src/**/*.ts", "./src/**/*.d.ts"],
-  "exclude": ["./dist/**/*", "./test/**/*"]
+  "include": ["src", ],
+  "exclude": ["dist", "test"]
 }
