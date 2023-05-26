@@ -11,23 +11,17 @@
   ],
   "types": "dist/songpro.d.ts",
   "jest": {
-    "modulePaths": [
-      "<rootDir>/src"
-    ],
-    "moduleDirectories": [
-      "node_modules",
-      "src"
-    ],
+    "moduleDirectories": ["<rootDir>/../", "node_modules"],
+    "moduleFileExtensions": ["js", "json", "ts"],
+    "preset": "ts-jest",
+    "rootDir": ".",
+    "testEnvironment": "node",
     "transform": {
       "^.+\\.ts$": [
         "ts-jest",
-        {
-          "tsconfig": "tsconfig.test.json"
-        }
+        { "tsconfig": "tsconfig.test.json" }
       ]
-    },
-    "preset": "ts-jest",
-    "verbose": false
+    }
   },
   "scripts": {
     "test": "jest",
