@@ -4,7 +4,7 @@ import {
   ISongProPart,
   ISongProSection,
   ISongProSong,
-} from './parser.model';
+} from "./parser.model";
 
 //No need to export this class, consumers have no need for it. The interface is exported anyway.
 class Line implements ISongProLine {
@@ -48,14 +48,14 @@ export class Parser {
     };
     let currentSection: ISongProSection | undefined;
 
-    const linesArr = text.split('\n');
+    const linesArr = text.split("\n");
 
     for (const line of linesArr) {
-      if (line.startsWith('@')) {
+      if (line.startsWith("@")) {
         this.processAttribute(song, line);
-      } else if (line.startsWith('!')) {
+      } else if (line.startsWith("!")) {
         this.processCustomAttribute(song, line);
-      } else if (line.startsWith('#')) {
+      } else if (line.startsWith("#")) {
         currentSection = this.processSection(song, line);
       } else {
         this.processLyricsAndChords(song, currentSection, line);
@@ -90,7 +90,7 @@ export class Parser {
     const matches = this.SECTION_REGEX.exec(line)!;
 
     const currentSection: ISongProSection = {
-      name: '',
+      name: "",
       lines: [],
     };
 
@@ -109,10 +109,10 @@ export class Parser {
     currentSection: ISongProSection | undefined,
     text: string
   ): void {
-    if (text !== '') {
+    if (text !== "") {
       if (currentSection === undefined) {
         currentSection = {
-          name: '',
+          name: "",
           lines: [],
         };
         song.sections.push(currentSection);
@@ -126,11 +126,11 @@ export class Parser {
   private buildLine(text: string): Line {
     const line = new Line();
 
-    if (text.startsWith('|-')) {
+    if (text.startsWith("|-")) {
       line.tablature = text;
-    } else if (text.startsWith('| ')) {
+    } else if (text.startsWith("| ")) {
       line.measures = this.getMeasures(text);
-    } else if (text.startsWith('>')) {
+    } else if (text.startsWith(">")) {
       line.comment = this.getComment(text);
     } else {
       const captures = this.scan(text, this.CHORDS_AND_LYRICS_REGEX);
@@ -138,7 +138,7 @@ export class Parser {
       for (const group of groupedCaptures) {
         const part = this.getPart(group[0], group[1]);
 
-        if (!(part.chord === '' && part.lyric === '')) {
+        if (!(part.chord === "" && part.lyric === "")) {
           line.parts.push(part);
         }
       }
@@ -182,18 +182,18 @@ export class Parser {
 
   private getPart(inputChord: string | undefined, inputLyric: string | undefined): ISongProPart {
     let chord: string | undefined;
-    let lyric = '';
+    let lyric = "";
 
     if (inputLyric != null) {
       lyric = inputLyric;
     }
 
     if (inputChord !== undefined) {
-      chord = inputChord.replace('[', '').replace(']', '');
+      chord = inputChord.replace("[", "").replace("]", "");
     }
 
     if (chord === undefined) {
-      chord = '';
+      chord = "";
     }
 
     const part: ISongProPart = {

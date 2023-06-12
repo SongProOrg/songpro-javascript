@@ -28,6 +28,10 @@
     "!**/*.spec.*",
     "!**/*.tsbuildinfo"
   ],
+  "prettier": {
+    "singleQuote": false,
+    "printWidth": 100
+  },
   "jest": {
     "moduleDirectories": [
       "<rootDir>/../",
