@@ -16,15 +16,17 @@
     "url": "https://github.com/SongProOrg/songpro-javascript/issues"
   },
   "keywords": [
+    "song",
+    "songpro"
   ],
   "files": [
-    "!**/*.json",
-    "!**/*.spec.*",
-    "!**/*.tsbuildinfo",
     "LICENSE",
     "README.md",
     "dist/main",
-    "dist/module"
+    "dist/module",
+    "!**/*.json",
+    "!**/*.spec.*",
+    "!**/*.tsbuildinfo"
   ],
   "jest": {
     "moduleDirectories": [
@@ -37,7 +39,7 @@
       "ts"
     ],
     "preset": "ts-jest",
-    "rootDir": ".",
+    "rootDir": "./src",
     "testEnvironment": "node",
     "transform": {
       "^.+\\.ts$": [
