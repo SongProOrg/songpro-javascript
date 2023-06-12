@@ -1,47 +1,14 @@
-export interface ISongProSong {
-  attrs: ISongProAttrs;
-  sections: ISongProSection[];
-  custom: Record<string, string>;
-}
+import {
+  ISongProLine,
+  ISongProMeasure,
+  ISongProPart,
+  ISongProSection,
+  ISongProSong,
+} from './model';
 
-export interface ISongProAttrs {
-  [key: string]: string | undefined;
-  title?: string;
-  artist?: string;
-  capo?: string;
-  key?: string;
-  tempo?: string;
-  year?: string;
-  album?: string;
-  tuning?: string;
-}
+export * from './model';
 
-export interface ISongProSection {
-  lines: ISongProLine[];
-  name: string;
-}
-
-export interface ISongProLine {
-  parts: ISongProPart[];
-  measures?: ISongProMeasure[];
-  tablature?: string;
-  comment?: string;
-
-  hasTablature: () => this is { tablature: string };
-  hasMeasures: () => this is { measures: ISongProMeasure[] };
-  hasComment: () => this is { comment: string };
-}
-
-export interface ISongProMeasure {
-  chords: (string | undefined)[];
-}
-
-export interface ISongProPart {
-  chord: string;
-  lyric: string;
-}
-
-//No need to export this class, the interface is exported.
+//No need to export this class, consumers have no need for it. The interface is exported anyway.
 class Line implements ISongProLine {
   parts: ISongProPart[] = [];
   measures?: ISongProMeasure[];
@@ -69,8 +36,7 @@ export class SongPro {
   private static readonly SECTION_REGEX = /#\s*([^$]*)/;
   private static readonly ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
   private static readonly CUSTOM_ATTRIBUTE_REGEX = /!(\w*)=([^%]*)/;
-  private static readonly CHORDS_AND_LYRICS_REGEX =
-    /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
+  private static readonly CHORDS_AND_LYRICS_REGEX = /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
 
   private static readonly MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
   private static readonly CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
@@ -84,14 +50,14 @@ export class SongPro {
     };
     let currentSection: ISongProSection | undefined;
 
-    const linesArr = text.split("\n");
+    const linesArr = text.split('\n');
 
     for (const line of linesArr) {
-      if (line.startsWith("@")) {
+      if (line.startsWith('@')) {
         this.processAttribute(song, line);
-      } else if (line.startsWith("!")) {
+      } else if (line.startsWith('!')) {
         this.processCustomAttribute(song, line);
-      } else if (line.startsWith("#")) {
+      } else if (line.startsWith('#')) {
         currentSection = this.processSection(song, line);
       } else {
         this.processLyricsAndChords(song, currentSection, line);
@@ -109,10 +75,7 @@ export class SongPro {
     }
   }
 
-  private static processCustomAttribute(
-    song: ISongProSong,
-    line: string
-  ): void {
+  private static processCustomAttribute(song: ISongProSong, line: string): void {
     const matches = this.CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
     if (matches?.[1] != null && matches[2] != null) {
@@ -120,16 +83,13 @@ export class SongPro {
     }
   }
 
-  private static processSection(
-    song: ISongProSong,
-    line: string
-  ): ISongProSection {
+  private static processSection(song: ISongProSong, line: string): ISongProSection {
     //This will always return a match no matter what
     //Here it is safe to do a non-null assertion with !
     const matches = this.SECTION_REGEX.exec(line)!;
 
     const currentSection: ISongProSection = {
-      name: "",
+      name: '',
       lines: [],
     };
 
@@ -146,10 +106,10 @@ export class SongPro {
     currentSection: ISongProSection | undefined,
     text: string
   ): void {
-    if (text !== "") {
+    if (text !== '') {
       if (currentSection === undefined) {
         currentSection = {
-          name: "",
+          name: '',
           lines: [],
         };
         song.sections.push(currentSection);
@@ -163,11 +123,11 @@ export class SongPro {
   private static buildLine(text: string): Line {
     const line = new Line();
 
-    if (text.startsWith("|-")) {
+    if (text.startsWith('|-')) {
       line.tablature = text;
-    } else if (text.startsWith("| ")) {
+    } else if (text.startsWith('| ')) {
       line.measures = this.getMeasures(text);
-    } else if (text.startsWith(">")) {
+    } else if (text.startsWith('>')) {
       line.comment = this.getComment(text);
     } else {
       const captures = this.scan(text, this.CHORDS_AND_LYRICS_REGEX);
@@ -175,7 +135,7 @@ export class SongPro {
       for (const group of groupedCaptures) {
         const part = this.getPart(group[0], group[1]);
 
-        if (!(part.chord === "" && part.lyric === "")) {
+        if (!(part.chord === '' && part.lyric === '')) {
           line.parts.push(part);
         }
       }
@@ -220,18 +180,18 @@ export class SongPro {
     inputLyric: string | undefined
   ): ISongProPart {
     let chord: string | undefined;
-    let lyric = "";
+    let lyric = '';
 
     if (inputLyric != null) {
       lyric = inputLyric;
     }
 
     if (inputChord !== undefined) {
-      chord = inputChord.replace("[", "").replace("]", "");
+      chord = inputChord.replace('[', '').replace(']', '');
     }
 
     if (chord === undefined) {
-      chord = "";
+      chord = '';
     }
 
     const part: ISongProPart = {
@@ -242,11 +202,7 @@ export class SongPro {
     return part;
   }
 
-  private static chunk<T>(
-    arr: T[],
-    chunkSize: number,
-    cache: T[][] = []
-  ): T[][] {
+  private static chunk<T>(arr: T[], chunkSize: number, cache: T[][] = []): T[][] {
     //Adapted from https://youmightnotneed.com/lodash/#chunk
     //Chunk size must be greater than 1
     const tmp = [...arr];
