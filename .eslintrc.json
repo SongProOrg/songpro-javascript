@@ -4,13 +4,12 @@
   "parserOptions": { "project": "./tsconfig.json" },
   "env": { "es6": true },
   "ignorePatterns": ["node_modules", "dist", "coverage"],
-  "plugins": ["import", "eslint-comments", "functional"],
+  "plugins": ["import", "eslint-comments"],
   "extends": [
     "eslint:recommended",
     "plugin:eslint-comments/recommended",
     "plugin:@typescript-eslint/strict",
     "plugin:import/typescript"
-    //"plugin:functional/lite"
   ],
   "overrides": [
     {
@@ -44,7 +43,6 @@
 
         "eslint-comments/disable-enable-pair": ["error", { "allowWholeFile": true }],
         "eslint-comments/no-unused-disable": "error",
-        "functional/no-return-void": "off",
         "import/order": ["error", { "alphabetize": { "order": "asc" } }],
         "sort-imports": ["error", { "ignoreDeclarationSort": true, "ignoreCase": true }]
       }
