@@ -76,6 +76,8 @@ export class Parser {
   private processCustomAttribute(song: ISongProSong, line: string): void {
     const matches = this.CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
+    //We need to do this check as-is here since the 2nd match could possibly be null sometimes!
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (matches?.[1] != null && matches[2] != null) {
       song.custom[matches[1]] = matches[2];
     }
@@ -84,6 +86,7 @@ export class Parser {
   private processSection(song: ISongProSong, line: string): ISongProSection {
     //This will always return a match no matter what
     //Here it is safe to do a non-null assertion with !
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const matches = this.SECTION_REGEX.exec(line)!;
 
     const currentSection: ISongProSection = {
@@ -91,6 +94,8 @@ export class Parser {
       lines: [],
     };
 
+    //We need to do this check as-is here since the 2nd match could possibly be null sometimes!
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (matches[1] != null) {
       currentSection.name = matches[1];
       song.sections.push(currentSection);
@@ -166,10 +171,12 @@ export class Parser {
   private getComment(text: string): string {
     //This will always return a match no matter what
     //Here it is safe to do a non-null assertions with !
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const matches = this.COMMENT_REGEX.exec(text)!;
 
     //If we got to this point, the regex will always match and have the first capture group
     //We can confidently tell typescript that these values will never be null, even with empty comment sections
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return matches[1]!.trim();
   }
 
