@@ -35,10 +35,10 @@ Just import `SongProParser` into your project and pass it the contents of a Song
 **For JavaScript Projects**
 ```javascript
 const fs = require('fs');
-const { SongProParser } = require('songpro');
+const { SongPro } = require('songpro');
 
 fs.readFile('escape-capsule.sng', function(err, contents) {
-    let song = SongProParser(contents);
+    let song = SongPro.parse(contents);
 
     console.log(song.title);
     console.log(song.artist);
@@ -52,7 +52,7 @@ import { readFile } from 'fs';
 import { SongProParser, ISongProSong } from 'songpro';
 
 readFile('escape-capsule.sng', function(err, contents) {
-    let song: ISongProSong = SongProParser(contents);
+    let song: ISongProSong = SongPro.parse(contents);
 
     console.log(song.title);
     console.log(song.artist);
