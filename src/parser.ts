@@ -1,47 +1,12 @@
-export interface ISongProSong {
-  attrs: ISongProAttrs;
-  sections: ISongProSection[];
-  custom: Record<string, string>;
-}
+import {
+  ISongProLine,
+  ISongProMeasure,
+  ISongProPart,
+  ISongProSection,
+  ISongProSong,
+} from "./parser.model";
 
-export interface ISongProAttrs {
-  [key: string]: string | undefined;
-  title?: string;
-  artist?: string;
-  capo?: string;
-  key?: string;
-  tempo?: string;
-  year?: string;
-  album?: string;
-  tuning?: string;
-}
-
-export interface ISongProSection {
-  lines: ISongProLine[];
-  name: string;
-}
-
-export interface ISongProLine {
-  parts: ISongProPart[];
-  measures?: ISongProMeasure[];
-  tablature?: string;
-  comment?: string;
-
-  hasTablature: () => this is { tablature: string };
-  hasMeasures: () => this is { measures: ISongProMeasure[] };
-  hasComment: () => this is { comment: string };
-}
-
-export interface ISongProMeasure {
-  chords: (string | undefined)[];
-}
-
-export interface ISongProPart {
-  chord: string;
-  lyric: string;
-}
-
-//No need to export this class, the interface is exported.
+//No need to export this class, consumers have no need for it. The interface is exported anyway.
 class Line implements ISongProLine {
   parts: ISongProPart[] = [];
   measures?: ISongProMeasure[];
@@ -65,18 +30,17 @@ class Line implements ISongProLine {
   }
 }
 
-export class SongPro {
-  private static readonly SECTION_REGEX = /#\s*([^$]*)/;
-  private static readonly ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
-  private static readonly CUSTOM_ATTRIBUTE_REGEX = /!(\w*)=([^%]*)/;
-  private static readonly CHORDS_AND_LYRICS_REGEX =
-    /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
+export class Parser {
+  private readonly SECTION_REGEX = /#\s*([^$]*)/;
+  private readonly ATTRIBUTE_REGEX = /@(\w*)=([^%]*)/;
+  private readonly CUSTOM_ATTRIBUTE_REGEX = /!(\w*)=([^%]*)/;
+  private readonly CHORDS_AND_LYRICS_REGEX = /(\[[\w#b/]+])?([\w\s',.!()_\-"]*)/gi;
 
-  private static readonly MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
-  private static readonly CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
-  private static readonly COMMENT_REGEX = />\s*([^$]*)/;
+  private readonly MEASURES_REGEX = /([[\w#b/\]+\]\s]+)[|]*/gi;
+  private readonly CHORDS_REGEX = /\[([\w#b+/]+)]?/gi;
+  private readonly COMMENT_REGEX = />\s*([^$]*)/;
 
-  public static parse(text: string): ISongProSong {
+  parse(text: string): ISongProSong {
     const song: ISongProSong = {
       attrs: {},
       sections: [],
@@ -101,7 +65,7 @@ export class SongPro {
     return song;
   }
 
-  private static processAttribute(song: ISongProSong, line: string): void {
+  private processAttribute(song: ISongProSong, line: string): void {
     const matches = this.ATTRIBUTE_REGEX.exec(line);
 
     if (matches?.[1] != null) {
@@ -109,23 +73,20 @@ export class SongPro {
     }
   }
 
-  private static processCustomAttribute(
-    song: ISongProSong,
-    line: string
-  ): void {
+  private processCustomAttribute(song: ISongProSong, line: string): void {
     const matches = this.CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
+    //We need to do this check as-is here since the 2nd match could possibly be null sometimes!
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (matches?.[1] != null && matches[2] != null) {
       song.custom[matches[1]] = matches[2];
     }
   }
 
-  private static processSection(
-    song: ISongProSong,
-    line: string
-  ): ISongProSection {
+  private processSection(song: ISongProSong, line: string): ISongProSection {
     //This will always return a match no matter what
     //Here it is safe to do a non-null assertion with !
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const matches = this.SECTION_REGEX.exec(line)!;
 
     const currentSection: ISongProSection = {
@@ -133,6 +94,8 @@ export class SongPro {
       lines: [],
     };
 
+    //We need to do this check as-is here since the 2nd match could possibly be null sometimes!
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (matches[1] != null) {
       currentSection.name = matches[1];
       song.sections.push(currentSection);
@@ -141,7 +104,7 @@ export class SongPro {
     return currentSection;
   }
 
-  private static processLyricsAndChords(
+  private processLyricsAndChords(
     song: ISongProSong,
     currentSection: ISongProSection | undefined,
     text: string
@@ -160,7 +123,7 @@ export class SongPro {
     }
   }
 
-  private static buildLine(text: string): Line {
+  private buildLine(text: string): Line {
     const line = new Line();
 
     if (text.startsWith("|-")) {
@@ -184,7 +147,7 @@ export class SongPro {
     return line;
   }
 
-  private static getMeasures(text: string): ISongProMeasure[] {
+  private getMeasures(text: string): ISongProMeasure[] {
     const capturesList = this.scan(text, this.MEASURES_REGEX);
 
     const measures: ISongProMeasure[] = [];
@@ -205,20 +168,19 @@ export class SongPro {
     return measures;
   }
 
-  private static getComment(text: string): string {
+  private getComment(text: string): string {
     //This will always return a match no matter what
     //Here it is safe to do a non-null assertions with !
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const matches = this.COMMENT_REGEX.exec(text)!;
 
     //If we got to this point, the regex will always match and have the first capture group
     //We can confidently tell typescript that these values will never be null, even with empty comment sections
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return matches[1]!.trim();
   }
 
-  private static getPart(
-    inputChord: string | undefined,
-    inputLyric: string | undefined
-  ): ISongProPart {
+  private getPart(inputChord: string | undefined, inputLyric: string | undefined): ISongProPart {
     let chord: string | undefined;
     let lyric = "";
 
@@ -242,11 +204,7 @@ export class SongPro {
     return part;
   }
 
-  private static chunk<T>(
-    arr: T[],
-    chunkSize: number,
-    cache: T[][] = []
-  ): T[][] {
+  private chunk<T>(arr: T[], chunkSize: number, cache: T[][] = []): T[][] {
     //Adapted from https://youmightnotneed.com/lodash/#chunk
     //Chunk size must be greater than 1
     const tmp = [...arr];
@@ -254,7 +212,7 @@ export class SongPro {
     return cache;
   }
 
-  private static scan(str: string, pattern: RegExp): (string | undefined)[] {
+  private scan(str: string, pattern: RegExp): (string | undefined)[] {
     //Note: all patterns used here must have the 'global' flag set");
     return [...str.matchAll(pattern)].flatMap((m) => m.slice(1));
   }
