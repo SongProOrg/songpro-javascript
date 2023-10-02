@@ -105,7 +105,7 @@ export class Parser {
   private processLyricsAndChords(
     song: ISongProSong,
     currentSection: ISongProSection | undefined,
-    text: string
+    text: string,
   ): void {
     if (text !== "") {
       if (currentSection === undefined) {
