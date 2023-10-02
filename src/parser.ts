@@ -77,7 +77,6 @@ export class Parser {
     const matches = this.CUSTOM_ATTRIBUTE_REGEX.exec(line);
 
     //We need to do this check as-is here since the 2nd match could possibly be null sometimes!
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (matches?.[1] != null && matches[2] != null) {
       song.custom[matches[1]] = matches[2];
     }
@@ -95,7 +94,6 @@ export class Parser {
     };
 
     //We need to do this check as-is here since the 2nd match could possibly be null sometimes!
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (matches[1] != null) {
       currentSection.name = matches[1];
       song.sections.push(currentSection);
