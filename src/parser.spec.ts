@@ -74,7 +74,7 @@ describe("Parser", () => {
 
       expect(song.custom.difficulty).toEqual("Easy");
       expect(song.custom.spotify_url).toEqual(
-        "https://open.spotify.com/track/5zADxJhJEzuOstzcUtXlXv?si=SN6U1oveQ7KNfhtD2NHf9A"
+        "https://open.spotify.com/track/5zADxJhJEzuOstzcUtXlXv?si=SN6U1oveQ7KNfhtD2NHf9A",
       );
     });
 
@@ -130,7 +130,7 @@ describe("Parser", () => {
       expect(song.sections[0]!.lines.length).toBe(1);
       expect(song.sections[0]!.lines[0]!.parts.length).toBe(1);
       expect(song.sections[0]!.lines[0]!.parts[0]!.lyric).toEqual(
-        "I don't see! a bad, moon a-rising. (a-rising)"
+        "I don't see! a bad, moon a-rising. (a-rising)",
       );
     });
 
